@@ -8,13 +8,7 @@ node {
     }
 
     stage('Build image') {
-        app = docker.build("bibi1989/medic-server")
-    }
-
-    stage('Test image') {
-        app.inside {
-            sh 'echo "Tests passed"'
-        }
+        app = docker.build("bibi1989/medic-server:v1.1.3")
     }
 
     stage('Push image') {
