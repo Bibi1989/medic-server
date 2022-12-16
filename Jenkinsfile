@@ -1,27 +1,23 @@
-pipeline {
-    agent {label 'node-agent'}
+node {
+    def app
 
-    environment {
-        DOCKERHUB_CREDENTIALS=credentials('docker-hub-credentials')
+    stage('Clone repository') {
+        checkout scm
     }
 
-    stages {
-        stage('Clone Repository') {
-            steps {
-                git 'https://github.com/Bibi1989/medic-server.git'
-            }
-        }
+    stage('Initialize'){
+        def dockerHome = tool 'myDocker'
+        env.PATH = "${dockerHome}/bin:${env.PATH}"
+    }
 
-        stage('Build Image') {
-            steps {
-                sh 'docker build -t bibi1989/medic-server:latest .'
-            }
-        }
+    stage('Build image') {
+        app = docker.build("bibi1989/medic-server")
+    }
 
-        stage('Push Image') {
-            steps {
-                sh 'docker push bibi1989/medic-server:latest .'
-            }
+    stage('Push image') {
+        docker.withRegistry('https://registry.hub.docker.com', 'docker-hub-credentials') {
+            app.push("${env.BUILD_NUMBER}")
+            app.push("latest")
         }
     }
 }
