@@ -1,13 +1,15 @@
 pipeline {
     agent {label 'Built-In Node'}
-    
+
     environment {
         DOCKERHUB_CREDENTIALS=credentials('docker-hub-credentials')
     }
 
     stages {
         stage('Clone Repository') {
-            checkout scm
+            steps {
+                git 'https://github.com/Bibi1989/medic-server.git'
+            }
         }
 
         stage('Build Image') {
