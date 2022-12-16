@@ -1,5 +1,5 @@
 pipeline {
-    agent {label 'Built-In Node'}
+    agent {label 'node-agent'}
 
     environment {
         DOCKERHUB_CREDENTIALS=credentials('docker-hub-credentials')
