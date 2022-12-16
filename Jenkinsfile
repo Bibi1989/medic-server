@@ -1,25 +1,23 @@
-node {
-    def app
-
-    stage('Clone repository') {
-        /* Let's make sure we have the repository cloned to our workspace */
-
-        checkout scm
+pipeline {
+    environment {
+        DOCKERHUB_CREDENTIALS=credentials('docker-hub-credentials')
     }
 
-    stage('Initialize'){
-        def dockerHome = tool 'myDocker'
-        env.PATH = "${dockerHome}/bin:${env.PATH}"
-    }
+    stages {
+        stage('Clone Repository') {
+            checkout scm
+        }
 
-    stage('Build image') {
-        app = docker.build("bibi1989/medic-server:v1.1.3")
-    }
+        stage('Build Image') {
+            steps {
+                sh 'docker build -t bibi1989/medic-server:latest .'
+            }
+        }
 
-    stage('Push image') {
-        docker.withRegistry('https://registry.hub.docker.com', 'docker-hub-credentials') {
-            app.push("${env.BUILD_NUMBER}")
-            app.push("latest")
+        stage('Push Image') {
+            steps {
+                sh 'docker push bibi1989/medic-server:latest .'
+            }
         }
     }
 }
