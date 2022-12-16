@@ -11,7 +11,7 @@ node {
     }
 
     stage('Build image') {
-        app = docker.build("bibi1989/medic-server")
+        app = docker.build("bibi1989/medic-server:latest")
     }
 
     stage('Push image') {
